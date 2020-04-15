@@ -1,6 +1,6 @@
 const dialogflow = require('dialogflow');
 const uuid = require('uuid');
-
+const { struct } = require('pb-util');
 
 /*
     Input:
@@ -8,7 +8,13 @@ const uuid = require('uuid');
             payload: {
                 text: string,
                 languageCode: string,
-                contexts: context[]
+                contexts: googleContextObjects[],
+                contexts: {
+                    [contextId] : {
+                        params: {},
+                        lifespanCount: number
+                    }
+                }
             },
             dialogFlowSessionId: string
             credentials: {
@@ -23,6 +29,31 @@ const uuid = require('uuid');
         }
 */
 module.exports = (RED) => {
+
+
+    async function convertToContexts(session, msg) {
+        const out = [];
+        const contextIds = Object.keys();
+        for (const contextId of contextIds) {
+            const context = msg.contexts[contextId];
+            const contextPath = contextsClient.contextPath(
+                projectId,
+                sessionId,
+                contextId,
+            );
+            const request = {
+                parent: sessionPath,
+                context: {
+                    name: contextPath,
+                    parameters: struct.encode(context.params),
+                    lifespanCount: context.lifespanCount,
+                },
+            };
+            const [context] = await contextsClient.createContext(request);
+            out.push(context);
+        }
+        return out;
+    }
 
 
     function BasicDetectIntent(config) {
@@ -58,10 +89,22 @@ module.exports = (RED) => {
                     },
                 },
             };
-            if (msg.payload.contexts && msg.payload.contexts.length > 0) {
-                request.queryParams = {
-                    contexts: msg.payload.contexts,
-                };
+            if (msg.payload.contexts) {
+                if (!Array.isArray(msg.payload.contexts)) {
+                    try {
+                        request.queryParams = {
+                            contexts: await convertToContexts(session, sessionPath),
+                        };
+                    } catch (ex) {
+                        this.error('Failed to Convert supplied contexts to Google Contexts');
+                        this.error(ex);
+                    }
+                } else {
+                    // using google contexts directly
+                    request.queryParams = {
+                        contexts: msg.payload.contexts,
+                    };
+                }
             }
             try {
                 const responses = await sessionClient.detectIntent(request);
