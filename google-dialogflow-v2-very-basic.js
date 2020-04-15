@@ -31,7 +31,6 @@ module.exports = (RED) => {
         this.name = config.name;
 
         this.on('input', async (msg, send, done) => {
-            this.warn('got input!');
             let sessionClient
             try {
                 sessionClient = new dialogflow.SessionsClient(msg.credentials.dialogFlow);
@@ -59,19 +58,18 @@ module.exports = (RED) => {
                     },
                 },
             };
-            this.warn('okay to...');
             if (msg.payload.contexts && msg.payload.contexts.length > 0) {
                 request.queryParams = {
                     contexts: msg.payload.contexts,
                 };
             }
-            this.warn('making request!');
             try {
                 const responses = await sessionClient.detectIntent(request);
                 msg.payload = responses;
                 send(msg);
             } catch (ex) {
-                this.error('Failed to detect intent!', ex);
+                this.error('Failed to detect intent!');
+                this.error(ex);
             }
         });
     }
