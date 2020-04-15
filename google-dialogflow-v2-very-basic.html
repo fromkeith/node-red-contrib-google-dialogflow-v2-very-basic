@@ -44,7 +44,17 @@ msg = {
 }
         </pre>
         <p>If no <strong>dialogFlowSessionId</strong> is provided, one is generated.</p>
-        <p><strong>contexts</strong> is optional and should match nodejs sdk structure for dialog flow calls</p>
+        <p><strong>contexts</strong> is optional. You can either a simplified version
+                <pre>
+contexts: {
+    contextName: {
+        params: {},
+        lifespanCount: 1
+    }
+}
+                </pre>
+                Or you can supplied an array of contexts as specified by the NodeJs library. I recommend the former unless you are chaining requests.
+        </p>
         <p><strong>credentials.dialogFlow</strong> will be passed directly to "SessionsClient".</p>
         <h2>Output</h2>
         <p>The <strong>payload</strong> object will be populated with the direct response from the API</p>
