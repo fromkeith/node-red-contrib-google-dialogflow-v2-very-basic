@@ -38,6 +38,7 @@ module.exports = (RED) => {
             } catch (ex) {
                 this.error('Failed to create session!', ex);
             }
+            this.warn('alright..')
             if (!msg.dialogFlowSessionId) {
                 msg.dialogFlowSessionId = uuid.v4();
             }
@@ -58,7 +59,8 @@ module.exports = (RED) => {
                     },
                 },
             };
-            if (contexts && contexts.length > 0) {
+            this.warn('okay to...');
+            if (msg.payload.contexts && msg.payload.contexts.length > 0) {
                 request.queryParams = {
                     contexts: msg.payload.contexts,
                 };
