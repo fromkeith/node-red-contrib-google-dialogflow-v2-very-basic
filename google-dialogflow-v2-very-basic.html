@@ -1,0 +1,51 @@
+<script type="text/javascript">
+    RED.nodes.registerType('dialogflow-v2-very-basic',{
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            projectId: {value: "", required: true},
+            name: {value: "", required: false},
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "file.png",
+        label() {
+            return this.name || "Detect Intent";
+        },
+    });
+</script>
+<script type="text/html" data-template-name="dialogflow-v2-very-basic">
+    <div class="form-row">
+        <label for="node-input-name">Name</label>
+        <input type="text" id="node-input-name" placeholder="Detect Intent">
+    </div>
+    <div class="form-row">
+        <label for="node-input-projectId">Project Id</label>
+        <input type="text" id="node-input-projectId" placeholder="">
+    </div>
+</script>
+<script type="text/html" data-help-name="dialogflow-v2-very-basic">
+    <p>Performs very basic detect intent on DialogFlow v2 for text.</p>
+    <h2>Input</h2>
+    <p>Expects</p>
+        <pre>
+msg = {
+    payload: {
+        text: string,
+        languageCode: string,
+        contexts: context[]
+    },
+    dialogFlowSessionId: string
+    credentials: {
+        dialogFlow: {
+            sessionclient stuff
+        }
+    }
+}
+        </pre>
+        <p>If no <strong>dialogFlowSessionId</strong> is provided, one is generated.</p>
+        <p><strong>contexts</strong> is optional and should match nodejs sdk structure for dialog flow calls</p>
+        <p><strong>credentials.dialogFlow</strong> will be passed directly to "SessionsClient".</p>
+        <h2>Output</h2>
+        <p>The <strong>payload</strong> object will be populated with the direct response from the API</p>
+</script>
