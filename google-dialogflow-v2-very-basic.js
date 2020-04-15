@@ -35,7 +35,7 @@ module.exports = (RED) => {
         const out = [];
         const contextIds = Object.keys(msg.payload.contexts);
         for (const contextId of contextIds) {
-            const context = msg.contexts[contextId];
+            const context = msg.payload.contexts[contextId];
             const contextPath = contextsClient.contextPath(
                 projectId,
                 msg.dialogFlowSessionId,
