@@ -31,7 +31,7 @@ const { struct } = require('pb-util');
 module.exports = (RED) => {
 
 
-    async function convertToContexts(sessionPath, msg) {
+    async function convertToContexts(projectId, sessionPath, msg) {
         const out = [];
         const contextIds = Object.keys();
         for (const contextId of contextIds) {
@@ -45,10 +45,12 @@ module.exports = (RED) => {
                 parent: sessionPath,
                 context: {
                     name: contextPath,
-                    parameters: struct.encode(context.params),
                     lifespanCount: context.lifespanCount,
                 },
             };
+            if (context.params) {
+                request.context.parameters = struct.encode(context.params);
+            }
             const [outContext] = await contextsClient.createContext(request);
             out.push(outContext);
         }
@@ -95,7 +97,7 @@ module.exports = (RED) => {
                 if (!Array.isArray(msg.payload.contexts)) {
                     try {
                         request.queryParams = {
-                            contexts: await convertToContexts(sessionPath, msg),
+                            contexts: await convertToContexts(this.projectId, sessionPath, msg),
                         };
                     } catch (ex) {
                         this.error('Failed to Convert supplied contexts to Google Contexts');
