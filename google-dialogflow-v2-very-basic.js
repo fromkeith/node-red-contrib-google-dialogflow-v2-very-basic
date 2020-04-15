@@ -115,6 +115,7 @@ module.exports = (RED) => {
             try {
                 const responses = await sessionClient.detectIntent(request);
                 msg.payload = responses[0];
+                msg.request = request;
                 send(msg);
             } catch (ex) {
                 this.error('Failed to detect intent!');
