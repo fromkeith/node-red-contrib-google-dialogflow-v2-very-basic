@@ -52,9 +52,13 @@ module.exports = (RED) => {
                     contexts: msg.payload.contexts,
                 };
             }
-            const responses = await sessionClient.detectIntent(request);
-            msg.payload = responses;
-            send(msg);
+            try {
+                const responses = await sessionClient.detectIntent(request);
+                msg.payload = responses;
+                send(msg);
+            } catch (ex) {
+                node.error('Failed!', ex);
+            }
         });
     }
 
