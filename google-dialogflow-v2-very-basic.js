@@ -31,6 +31,7 @@ module.exports = (RED) => {
         this.name = config.name;
 
         this.on('input', async (msg, send, done) => {
+            this.warn('got input!');
             const sessionClient = new dialogflow.SessionsClient(msg.credentials.dialogFlow);
             if (!msg.dialogFlowSessionId) {
                 msg.dialogFlowSessionId = uuid.v4();
@@ -52,12 +53,13 @@ module.exports = (RED) => {
                     contexts: msg.payload.contexts,
                 };
             }
+            this.warn('making request!');
             try {
                 const responses = await sessionClient.detectIntent(request);
                 msg.payload = responses;
                 send(msg);
             } catch (ex) {
-                node.error('Failed!', ex);
+                this.error('Failed!', ex);
             }
         });
     }
