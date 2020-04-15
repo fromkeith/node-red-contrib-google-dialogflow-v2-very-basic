@@ -49,8 +49,8 @@ module.exports = (RED) => {
                     lifespanCount: context.lifespanCount,
                 },
             };
-            const [context] = await contextsClient.createContext(request);
-            out.push(context);
+            const [outContext] = await contextsClient.createContext(request);
+            out.push(outContext);
         }
         return out;
     }
@@ -67,6 +67,7 @@ module.exports = (RED) => {
                 sessionClient = new dialogflow.SessionsClient(msg.credentials.dialogFlow);
             } catch (ex) {
                 this.error('Failed to create session!', ex);
+                return;
             }
             this.warn('alright..')
             if (!msg.dialogFlowSessionId) {
@@ -77,6 +78,7 @@ module.exports = (RED) => {
                 sessionPath = sessionClient.sessionPath(this.projectId, msg.dialogFlowSessionId);
             } catch (ex) {
                 this.error('failed to make session path');
+                return;
             }
             const request = {
                 session: sessionPath,
@@ -98,6 +100,7 @@ module.exports = (RED) => {
                     } catch (ex) {
                         this.error('Failed to Convert supplied contexts to Google Contexts');
                         this.error(ex);
+                        return;
                     }
                 } else {
                     // using google contexts directly

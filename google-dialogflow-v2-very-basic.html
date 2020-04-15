@@ -17,12 +17,10 @@
 <script type="text/html" data-template-name="dialogflow-v2-very-basic">
     <div class="form-row">
         <label for="node-input-name">Name</label>
-        <input type="text" id="node-input-name" placeholder="Detect Intent">
-    </div>
+        <input type="text" id="node-input-name" placeholder="Detect Intent"></div>
     <div class="form-row">
         <label for="node-input-projectId">Project Id</label>
-        <input type="text" id="node-input-projectId" placeholder="">
-    </div>
+        <input type="text" id="node-input-projectId" placeholder=""></div>
 </script>
 <script type="text/html" data-help-name="dialogflow-v2-very-basic">
     <p>Performs very basic detect intent on DialogFlow v2 for text.</p>
@@ -47,7 +45,7 @@ msg = {
         <p><strong>contexts</strong> is optional. You can either a simplified version
                 <pre>
 contexts: {
-    contextName: {
+    [contextName]: {
         params: {},
         lifespanCount: 1
     }
