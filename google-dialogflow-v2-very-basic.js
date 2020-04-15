@@ -31,14 +31,14 @@ const { struct } = require('pb-util');
 module.exports = (RED) => {
 
 
-    async function convertToContexts(session, msg) {
+    async function convertToContexts(sessionPath, msg) {
         const out = [];
         const contextIds = Object.keys();
         for (const contextId of contextIds) {
             const context = msg.contexts[contextId];
             const contextPath = contextsClient.contextPath(
                 projectId,
-                sessionId,
+                msg.dialogFlowSessionId,
                 contextId,
             );
             const request = {
@@ -93,7 +93,7 @@ module.exports = (RED) => {
                 if (!Array.isArray(msg.payload.contexts)) {
                     try {
                         request.queryParams = {
-                            contexts: await convertToContexts(session, sessionPath),
+                            contexts: await convertToContexts(sessionPath, msg),
                         };
                     } catch (ex) {
                         this.error('Failed to Convert supplied contexts to Google Contexts');
