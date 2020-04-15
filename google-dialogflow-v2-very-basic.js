@@ -32,11 +32,21 @@ module.exports = (RED) => {
 
         this.on('input', async (msg, send, done) => {
             this.warn('got input!');
-            const sessionClient = new dialogflow.SessionsClient(msg.credentials.dialogFlow);
+            let sessionClient
+            try {
+                sessionClient = new dialogflow.SessionsClient(msg.credentials.dialogFlow);
+            } catch (ex) {
+                this.error('Failed to create session!', ex);
+            }
             if (!msg.dialogFlowSessionId) {
                 msg.dialogFlowSessionId = uuid.v4();
             }
-            const sessionPath = sessionClient.sessionPath(this.projectId, msg.dialogFlowSessionId);
+            let sessionPath;
+            try {
+                sessionPath = sessionClient.sessionPath(this.projectId, msg.dialogFlowSessionId);
+            } catch (ex) {
+                this.error('failed to make session path');
+            }
             const request = {
                 session: sessionPath,
                 queryInput: {
@@ -59,7 +69,7 @@ module.exports = (RED) => {
                 msg.payload = responses;
                 send(msg);
             } catch (ex) {
-                this.error('Failed!', ex);
+                this.error('Failed to detect intent!', ex);
             }
         });
     }
