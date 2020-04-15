@@ -33,7 +33,7 @@ module.exports = (RED) => {
 
     async function convertToContexts(projectId, sessionPath, msg) {
         const out = [];
-        const contextIds = Object.keys();
+        const contextIds = Object.keys(msg.payload.contexts);
         for (const contextId of contextIds) {
             const context = msg.contexts[contextId];
             const contextPath = contextsClient.contextPath(
